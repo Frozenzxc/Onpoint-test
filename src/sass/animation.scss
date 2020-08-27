@@ -1,0 +1,29 @@
+@keyframes bounce-big-circle {
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes bounce-middle-circle {
+  50% {
+    transform: scale(1.5);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes bounce-small-circle {
+  50% {
+    transform: scale(2);
+  }
+
+  100% {
+    transform: scale(0.5);
+  }
+}

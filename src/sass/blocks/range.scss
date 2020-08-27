@@ -1,0 +1,54 @@
+.range__container {
+  position: absolute;
+  width: 800px;
+  height: 100px;
+  bottom: 0;
+  left: 112px;
+}
+
+.range__dot {
+  position: absolute;
+  left: -22px;
+  top: 0;
+  width: 48px;
+  height: 60px;
+  background: url("../img/Polygon 1.svg") no-repeat center;
+  background-size: contain;
+  z-index: 2;
+}
+
+.range__bar {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  width: 100%;
+  height: 14px;
+  background-color: #435063;
+  z-index: 1;
+}
+
+.range__progress {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  width: 0;
+  height: 14px;
+  background-color: #d1eaff;
+  z-index: 1;
+}
+
+.range__labels {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  font-family: "Gotham Pro", Arial, sans-serif;
+  font-weight: 400;
+  font-size: 30px;
+  color: #ffffff;
+  bottom: 10px;
+  left: 0;
+}
