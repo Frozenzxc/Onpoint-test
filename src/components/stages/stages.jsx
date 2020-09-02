@@ -43,9 +43,13 @@ class Stages extends React.PureComponent {
     this.dot.addEventListener(`touchstart`, () => {
       this.range.addEventListener(`touchmove`, this.handleDrag);
     });
-    this.dot.addEventListener(`touchend`, this.handleInteractionEnd);
+    this.dot.addEventListener(`touchend`, (evt) => {
+      setTimeout(() => this.handleInteractionEnd(evt), 100);
+    });
 
-    this.range.addEventListener(`mouseup`, this.handleInteractionEnd);
+    this.range.addEventListener(`mouseup`, (evt) => {
+      setTimeout(() => this.handleInteractionEnd(evt), 100);
+    });
   }
 
   handleDrag(evt) {
