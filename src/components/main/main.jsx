@@ -17,22 +17,46 @@ class Main extends React.PureComponent {
       transitionStart: false,
     };
 
+    this.touchStartY = null;
+    this.touchEndY = null;
+
     this.handleScroll = this.handleScroll.bind(this);
     this.scroll = this.scroll.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.handleTouch = this.handleTouch.bind(this);
+    this.updatePosition = this.updatePosition.bind(this);
   }
 
   componentDidMount() {
     window.addEventListener(`wheel`, this.handleScroll);
+    window.addEventListener(`touchstart`, (evt) => {
+      this.touchStartY = evt.targetTouches[0].clientY;
+    });
+
+    window.addEventListener(`touchend`, (evt) => {
+      this.touchEndY = evt.changedTouches[0].clientY;
+      this.handleTouch();
+    });
   }
 
   componentWillUnmount() {
     window.removeEventListener(`wheel`, this.handleScroll);
   }
 
+  handleTouch() {
+    let direction = this.touchStartY - this.touchEndY;
+    if (Math.abs(direction) > 100) {
+      this.updatePosition(direction);
+    }
+  }
+
   handleScroll(evt) {
-    const {currentSlide, isScrolling} = this.state;
     let direction = evt.deltaY;
+    this.updatePosition(direction);
+  }
+
+  updatePosition(direction) {
+    const {currentSlide, isScrolling} = this.state;
     if (isScrolling) {
       if (direction < 0) {
         if (currentSlide !== 0) {
@@ -43,22 +67,13 @@ class Main extends React.PureComponent {
           this.scroll(currentSlide + 1);
         }
       }
-    } else {
-      window.scrollTo({
-        top: PAGE_HEIGHT * currentSlide,
-        behavior: `smooth`
-      });
-      setTimeout(() => this.setState(() => ({
-        isScrolling: true,
-      })), 1000);
     }
   }
 
   scroll(currentSlide) {
-    window.scrollTo({
-      top: PAGE_HEIGHT * currentSlide,
-      behavior: `smooth`
-    });
+    const shift = PAGE_HEIGHT * currentSlide;
+    const container = document.querySelector(`.main__container`);
+    container.style.transform = `translateY(-${shift}px)`;
     setTimeout(() => this.setState(() => ({
       isScrolling: true,
     })), 1000);
@@ -77,7 +92,7 @@ class Main extends React.PureComponent {
     const {currentSlide, isScrolling} = this.state;
 
     return (
-      <React.Fragment>
+      <div className="main__container">
         <Targets>
           <ScrollButton handleClick={this.handleClick} visibility={isScrolling}/>
         </Targets>
@@ -86,7 +101,7 @@ class Main extends React.PureComponent {
         </Decision>
         <Stages/>
         <SliderCounter currentSlide={currentSlide}/>
-      </React.Fragment>
+      </div>
     );
   }
 }

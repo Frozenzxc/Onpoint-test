@@ -3,11 +3,15 @@ import {PAGE_WIDTH, BAR_WIDTH, MARKER_WIDTH} from "../../const";
 
 const getCoordsX = (evt) => {
   const windowWidth = document.documentElement.clientWidth;
+  let clientX = evt.clientX;
+  if (evt.changedTouches && evt.changedTouches.length) {
+    clientX = evt.changedTouches[0].clientX;
+  }
 
   if (windowWidth > PAGE_WIDTH) {
-    return Math.floor(evt.clientX - (PAGE_WIDTH - BAR_WIDTH + MARKER_WIDTH + windowWidth - PAGE_WIDTH) / 2);
+    return Math.floor(clientX - (PAGE_WIDTH - BAR_WIDTH + MARKER_WIDTH + windowWidth - PAGE_WIDTH) / 2);
   } else {
-    return Math.floor(evt.clientX - (PAGE_WIDTH - BAR_WIDTH + MARKER_WIDTH) / 2);
+    return Math.floor(clientX - (PAGE_WIDTH - BAR_WIDTH + MARKER_WIDTH) / 2);
   }
 };
 
@@ -20,7 +24,7 @@ class Stages extends React.PureComponent {
     this.bar = null;
     this.handleDrag = this.handleDrag.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.handleMouseUp = this.handleMouseUp.bind(this);
+    this.handleInteractionEnd = this.handleInteractionEnd.bind(this);
     this.state = {
       value: 0,
     };
@@ -36,7 +40,12 @@ class Stages extends React.PureComponent {
       this.range.addEventListener(`mousemove`, this.handleDrag);
     });
 
-    window.addEventListener(`mouseup`, this.handleMouseUp);
+    this.dot.addEventListener(`touchstart`, () => {
+      this.range.addEventListener(`touchmove`, this.handleDrag);
+    });
+    this.dot.addEventListener(`touchend`, this.handleInteractionEnd);
+
+    this.range.addEventListener(`mouseup`, this.handleInteractionEnd);
   }
 
   handleDrag(evt) {
@@ -55,8 +64,9 @@ class Stages extends React.PureComponent {
     }
   }
 
-  handleMouseUp(evt) {
+  handleInteractionEnd(evt) {
     this.range.removeEventListener(`mousemove`, this.handleDrag);
+    this.range.removeEventListener(`touchmove`, this.handleDrag);
 
     const coordsX = getCoordsX(evt);
     if (coordsX >= -MARKER_WIDTH / 2 && coordsX <= BAR_WIDTH * 0.25) {
@@ -84,7 +94,8 @@ class Stages extends React.PureComponent {
   }
 
   handleChange() {
-    const shift = PAGE_WIDTH * this.state.value;
+    const {value} = this.state;
+    const shift = PAGE_WIDTH * value;
     const cards = document.querySelector(`.stages__list`);
     cards.style.transform = `translateX(-${shift}px)`;
   }

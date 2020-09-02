@@ -11,6 +11,7 @@ module.exports = {
     open: true,
     port: 1337,
     historyApiFallback: true,
+    host: `192.168.88.239`
   },
   module: {
     rules: [
